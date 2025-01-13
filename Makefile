@@ -7,7 +7,7 @@ install: pyproject.toml
 	@poetry install --no-root
 
 check:
-	@poetry run ruff check src/
+	@poetry run flake8 src/
 
 clean:
 	@rm -rf `find . -name __pycache__`
