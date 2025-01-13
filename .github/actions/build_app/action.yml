@@ -5,7 +5,6 @@ run:
 
   steps:
   - name: Checkout repository
-    #run: git clone https://github.com/juedemsantos/ml-ci-cd.git
     uses: actions/checkout@v2
 
   - name: Set up Python
@@ -23,7 +22,7 @@ run:
     id: cached-poetry-dependencies
     with:
       path: .venv
-      key: venv-${{ runner.os }}-poetry-${{ hashFiles('**/poetry.lock') }}
+      key: venv-${{ runner.os }}-${{ hashFiles('**/poetry.lock') }}
 
   - name: Install dependencies
     if: steps.cached-poetry-dependencies.outputs.cache-hit != 'true'
