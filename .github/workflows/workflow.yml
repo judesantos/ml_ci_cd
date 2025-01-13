@@ -1,0 +1,39 @@
+name: ML-CI-CD Workflow
+
+on:
+  push:
+    branches:
+      - main
+  pull_request:
+    branches:
+      - main
+
+  permissions:
+    contents: read
+    pull-requests: read
+
+jobs:
+
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout repository
+      #run: git clone https://github.com/juedemsantos/ml-ci-cd.git
+      uses: actions/checkout@v2
+
+    - name: Set up Python
+      uses: actions/setup-python@v2
+      with:
+        python-version: '3.12'
+
+    - name:  Install Poetry
+      run: |
+        curl -sSL https://install.python-poetry.org | python3 -
+        export "$HOME/.local/bin:$PATH"
+
+    - name: Install dependencies
+      run: make install
+
+    - name: Lint with Flake8
+      run: make check
