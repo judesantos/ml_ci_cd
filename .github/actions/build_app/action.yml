@@ -1,6 +1,6 @@
 name: Build ML_CI_CD Workflow
 
-run:
+runs:
   using: composite
 
   steps:

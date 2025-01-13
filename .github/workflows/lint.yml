@@ -24,8 +24,6 @@ jobs:
 
     - name: Build Application
       uses: ./.github/actions/build_app
-      with:
-        os: ${{ runner.os }}
 
     - name: Lint with Flake8
       run: make check
