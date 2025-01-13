@@ -23,7 +23,7 @@ jobs:
         python-version: '3.12'
 
     - name: Build Application
-      uses: ./.github/actions/build
+      uses: ./.github/actions/build_app
 
     - name: Lint with Flake8
       run: make check
