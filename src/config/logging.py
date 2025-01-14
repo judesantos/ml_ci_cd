@@ -67,8 +67,10 @@ def configure_logging():
     Args:
       log_level: (str) log level
     """
-    settings = LoggingSettings()
 
+    logger.info('Initializing logger...')
+
+    settings = LoggingSettings()
     logger.remove()  # Remove default logger
 
     # Setup App console logger
@@ -83,7 +85,6 @@ def configure_logging():
         level=f'{settings.log_file_level}'
     )
 
-    logger.info("Starting application...")
     logger.debug("Logger initialized.")
 
 

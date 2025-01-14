@@ -1,7 +1,9 @@
-#.DEFAULT_GOAL := runner
+
+build:
+	@poetry run python3 src/runner_builder.py
 
 run:
-	@poetry run python3 src/runner.py
+	@poetry run python3 src/runner_inference.py
 
 install: pyproject.toml
 	@poetry install --no-root
@@ -14,5 +16,9 @@ clean:
 	@rm -rf .ruff_cache
 
 runner: install check run clean
+builder: install check build clean
 
-.PHONY: run install check clean runner
+all: install check build run clean
+
+.DEFAULT_GOAL := all
+.PHONY: build run install check clean runner builder

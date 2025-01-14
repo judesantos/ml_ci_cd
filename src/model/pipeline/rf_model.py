@@ -28,7 +28,9 @@ def build_model():
     Returns:
       float: model score
     """
-    logger
+
+    logger.info('Building model...')
+
     # Load the preprocessed dataset
     df = prepare_df()
     # Identify X and y
@@ -36,8 +38,7 @@ def build_model():
     # Split the dataset
     X_train, X_test, y_train, y_test = split_train_test(X, y)
 
-    logger.info(f'X_train={X_train.shape}.')
-    logger.info(f'y_train={y_train.shape}.')
+    logger.debug(f'X_train={X_train.shape}, y_train={y_train.shape}.')
 
     # Train the model
     logger.info('Training model...')
@@ -159,7 +160,7 @@ def save_model(model):
 
     logger.info(
         'Saving model to '
-        f'{settings.model_path}/{settings.model_name}'
+        f'{settings.model_path}/{settings.model_name}',
     )
 
     pkl.dump(model, open(f'{settings.model_path}/{settings.model_name}', 'wb'))
