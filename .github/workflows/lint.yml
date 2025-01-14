@@ -25,5 +25,5 @@ jobs:
     - name: Build Application
       uses: ./.github/actions/build_app
 
-    - name: Lint with Flake8
-      run: poetry flake8 check
+    - name: Lint with flake8
+      run: poetry run flake8 ./src
