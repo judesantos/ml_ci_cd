@@ -71,7 +71,6 @@ Thumbs.db
 # Python-specific package management files
 pip-wheel-metadata/
 *.whl
-poetry.lock
 Pipfile
 Pipfile.lock
 
