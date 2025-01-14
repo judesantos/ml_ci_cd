@@ -26,4 +26,4 @@ jobs:
       uses: ./.github/actions/build_app
 
     - name: Lint with flake8
-      run: poetry run flake8 ./src
+      run: make check
