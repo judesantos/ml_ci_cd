@@ -1,0 +1,159 @@
+/* Reset styles */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+html, body {
+    height: 100%;
+    background-image: url('../image/clouds.webp');
+    background-size: cover;
+    background-attachment: fixed;
+    background-repeat: no-repeat;
+
+}
+
+/* Flexbox container for the page */
+.wrapper {
+    display: flex;
+    flex-direction: column;
+    min-height: 100vh; /* Ensures full height */
+}
+
+/* Main content grows to fill available space */
+main {
+    flex: 1; /* Allows main to take all available space */
+    justify-content: center;
+}
+
+header {
+    background-color: #007BFF;
+    color: #fff;
+    padding: 1em;
+}
+
+/* Footer styling */
+footer {
+    display: flex;
+    color: #fff;
+    padding: 1em 0;
+    flex-direction: row;
+    margin: 5px 20px;
+    justify-content: right;
+}
+
+
+.content {
+    display: flex;
+    max-width: 100%;
+    max-height: 100%;
+    margin: 10%;
+    justify-content: center;
+    align-items: center;
+}
+
+form {
+    min-width: 400px;
+    padding: 20px;
+    border: 1px solid #ccc;
+    border-radius: 10px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    background-color: #fff;
+    opacity: 0.8;
+}
+
+table {
+    width: 100%;
+    border-spacing: 10px;
+}
+
+td {
+    vertical-align: middle;
+}
+
+input {
+    width: 100%;
+    padding: 8px;
+    box-sizing: border-box;
+}
+
+input[type="submit"] {
+    width: 100%;
+    margin: 20px 0;
+    padding: 20px 10px;
+    background-color: #007BFF;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+}
+
+button {
+    width: 100%;
+    padding: 10px;
+    background-color: #007BFF;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+}
+
+button:hover {
+    background-color: #0056b3;
+}
+
+a {
+    display: block;
+    text-align: center;
+    margin-top: 10px;
+    margin: 10px;
+}
+
+.form-error {
+    color: rgb(240, 41, 41);
+    padding: 2px;
+    margin: 2px 2px 2px;
+    font-size: 8;
+}
+
+.error {
+    color: rgb(240, 41, 41);
+    font-size: 2em;
+}
+
+.survey-submit {
+    width: 100%;
+    margin: 20px 0 10px 0;
+    text-align: right;
+}
+
+
+.survey-submit button {
+    width: 20%;
+    padding: 10px 0;
+}
+
+.acc-btn {
+    padding: 10px;
+    text-align: left;
+    border-radius: 3px;
+    font-size: 20px;
+    background-color: #fff !important;
+    color: #0a58ca;
+    margin: 2px 0;
+    transition: all 0.3s ease; /* Smooth transition effect */
+}
+
+.acc-btn:hover {
+    color: #0a58ca;
+    transform: scale(1.02);
+}
+
+.accordion-body select {
+    transition: all 0.1s ease; /* Smooth transition effect */
+}
+.accordion-body select:hover {
+    border-color: #0a58ca;
+    transform: scale(1.01);
+}

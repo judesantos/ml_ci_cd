@@ -1,0 +1,19 @@
+<!-- filepath: /Users/judesantos/dev/projects/yourtechy/ml_training/ml_ci_cd/app/templates/landing.html -->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="icon" type="image/x-icon" href="{{ url_for('static', filename='image/favicon.png') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/styles.css') }}">
+</head>
+<body>
+    <h1>Welcome to Our Application</h1>
+        <a href="{{ url_for('auth.login') }}">Login</a> |
+        <a href="{{ url_for('auth.signup') }}">Sign Up</a>
+        <p/>
+        <a href="{{ url_for('auth.login_google') }}">Login with Google</a>
+    </h1>
+
+</body>
+</html>
