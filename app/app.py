@@ -8,8 +8,6 @@ from flask_talisman import Talisman
 from routes import main, auth
 from settings import settings
 
-from extensions import db, jwt, limiter, oauth, csrf
-
 
 def create_app(db, jwt, limiter, oauth, csrf):
     """
@@ -29,7 +27,7 @@ def create_app(db, jwt, limiter, oauth, csrf):
         'default-src': ["'self'"],
         'img-src': ["'self'", "data:"],
         'style-src': ["'self'", "'unsafe-inline'"],
-        'script-src': "'self'",
+        'script-src': ["'self'", "'unsafe-inline'"],
         #    'img-src': ["'self'", "https://trusted.cdn.com"]
     }
     Talisman(app, content_security_policy=csp)
@@ -41,8 +39,17 @@ def create_app(db, jwt, limiter, oauth, csrf):
 
     app.config['SECRET_KEY'] = settings.SECRET_KEY
     app.config['JWT_SECRET_KEY'] = settings.JWT_SECRET_KEY
+    # Set to True in production (requires HTTPS)
+    app.config['JWT_COOKIE_SECURE'] = settings.JWT_COOKIE_SECURE
+    app.config['JWT_TOKEN_LOCATION'] = ['cookies']  # Store JWT in cookies
+    # Default: 'access_token'
+    app.config['JWT_ACCESS_COOKIE_NAME'] = 'access_token'
+    app.config['JWT_COOKIE_CSRF_PROTECT'] = True
+    app.config['JWT_COOKIE_SAMESITE'] = 'None'  # For cross-site cookies
+
     app.config['SQLALCHEMY_DATABASE_URI'] = settings.SQLALCHEMY_DATABASE_URI
     app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = track_notifications
+
     app.config['GOOGLE_CLIENT_ID'] = settings.GOOGLE_CLIENT_ID
     app.config['GOOGLE_CLIENT_SECRET'] = settings.GOOGLE_CLIENT_SECRET
     app.config['GOOGLE_DISCOVERY_URL'] = google_discovery_url
@@ -67,26 +74,17 @@ def create_app(db, jwt, limiter, oauth, csrf):
         if not request.is_secure and app.env != "development":
             return redirect(request.url.replace("http://", "https://"))
 
+    # @app.after_request
+    # def add_cache_control_headers(response):
+    #    response.headers['Cache-Control'] = 'no-store, no-cache, must-revalidate, post-check=0, pre-check=0, max-age=0'
+    #    response.headers['Pragma'] = 'no-cache'
+    #    response.headers['Expires'] = '-1'
+    #    return response
+
     @app.after_request
-    def add_cache_control_headers(response):
-        response.headers['Cache-Control'] = 'no-store, no-cache, must-revalidate, post-check=0, pre-check=0, max-age=0'
-        response.headers['Pragma'] = 'no-cache'
-        response.headers['Expires'] = '-1'
+    def disable_source_map(response):
+        if response.content_type.startswith("text/javascript"):
+            response.headers['SourceMap'] = ''
         return response
 
     return app
-
-
-if __name__ == '__main__':
-    """" Run the Flask application """
-
-    # Create the Flask application instance registered with extensions
-    app = create_app(db, jwt, limiter, oauth, csrf)
-
-    app.run(
-        debug=True,
-        ssl_context=(
-            'certs/app_certificate.pem',
-            'certs/app_private_key.pem'
-        )
-    )

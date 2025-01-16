@@ -20,6 +20,7 @@ class Settings(BaseSettings):
 
     Attributes:
         SECRET_KEY: (str) secret key for the application
+        JWT_COOKIE_SECURE: (bool) secure flag for JWT cookie
         JWT_SECRET_KEY: (str) secret key for JWT token
         MAX_CONTENT_LENGTH: (int) maximum content length
         SQLALCHEMY_DATABASE_URI: (str) database connection URI
@@ -31,6 +32,7 @@ class Settings(BaseSettings):
 
     SECRET_KEY: str
     JWT_SECRET_KEY: str
+    JWT_COOKIE_SECURE: bool
     SQLALCHEMY_DATABASE_URI: str
     SQLALCHEMY_TRACK_MODIFICATIONS: bool
     GOOGLE_CLIENT_ID: str

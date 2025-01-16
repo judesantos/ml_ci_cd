@@ -17,11 +17,12 @@ from wtforms.validators import DataRequired, EqualTo, Length, Regexp
 
 from flask_wtf import FlaskForm
 from flask import Blueprint, request, jsonify, url_for, flash
-from flask import session, redirect, render_template, get_flashed_messages
+from flask import session, redirect, render_template
 from flask_jwt_extended import create_access_token, jwt_required
-from flask_jwt_extended import get_jwt_identity, unset_jwt_cookies
+from flask_jwt_extended import get_jwt_identity, unset_jwt_cookies, set_access_cookies
 
-from app import db, oauth, limiter, settings
+from extensions import db, oauth, limiter
+from settings import settings
 from models import User
 
 bp = Blueprint('auth', __name__)
@@ -225,10 +226,10 @@ def login():
             if not user:
                 user = User.query.filter_by(email=username).first()
             if user:
-                print('password:', password)
                 if user.check_password(password=password):
                     session['user_id'] = user.id
-                    return redirect(url_for('main.home'))
+                    # Validation successful, create access token and
+                    # redirect to the dashboard
                 else:
                     validation_success = False
             else:
@@ -247,31 +248,48 @@ def login():
             return redirect(url_for('auth.login'))
 
         # Login successful, redirect to the dashboard
-        return redirect(url_for('main'))
+        response = redirect(url_for('main.dashboard'))
+
+        # Set session cookie credentials,
+        # otherwise the authenticated access to the resource we're
+        # redirecting to will fail
+        # See: jwt_required() decorator in the dashboard route
+        access_token = create_access_token(identity=user.username)
+        set_access_cookies(response, access_token)
+
+        print(f'Login Success. Redirect to dashboard')
+        return response
 
     return render_template('login.html', form=form)
 
 
-@bp.route('/logout', methods=['POST'])
-@limiter.limit("2 per minute")
-@jwt_required()
+@ bp.route('/logout', methods=['get'])
+@ limiter.limit("10 per minute")
+@ jwt_required()
 def logout():
     """
     Logout the currently authenticated user.
     The access token is invalidated by removing the JWT cookies.
 
-    Returns:
-        200: If the user is successfully logged out.
+    Redirects to the home page after logout.
     """
+
+    session.clear()
+
+    response = jsonify({"msg": "Logout successful"})
+    response.headers['Cache-Control'] = 'no-store, no-cache, must-revalidate, max-age=0'
+    response.headers['Pragma'] = 'no-cache'
+    response.headers['Expires'] = '0'
+
+    response.delete_cookie('remember_token')
 
     unset_jwt_cookies(response)  # Remove JWT cookies to invalidate the session
 
-    response = jsonify({"message": "Logout successful"})
-    return response, 200
+    return redirect(url_for('main.home'))
 
 
-@bp.route('/signup', methods=['GET', 'POST'])
-@limiter.limit("10 per minute")
+@ bp.route('/signup', methods=['GET', 'POST'])
+@ limiter.limit("10 per minute")
 def signup():
 
     form = SignupForm()
@@ -323,8 +341,8 @@ def signup():
     return render_template('signup.html', form=form)
 
 
-@bp.route('/error')
-@limiter.limit("2 per minute")
+@ bp.route('/error')
+@ limiter.limit("2 per minute")
 def error():
     """
     Display a custom error message when login fails.

@@ -1,0 +1,181 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dashboard Form</title>
+    <link rel="icon" type="image/x-icon" href="{{ url_for('static', filename='image/favicon.png') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/bootstrap.min.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/styles.css') }}">
+    <script src="{{ url_for('static', filename='js/bootstrap.bundle.min.js') }}"></script>
+    <script src="{{ url_for('static', filename='js/popper.min.js') }}"></script>
+    <style>
+        .form-group {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        .form-label {
+            flex: 2;
+            margin: 0 10px;
+            text-align: left;
+        }
+
+        .form-select {
+            flex: 1;
+        }
+    </style>
+</head>
+<body>
+    <header>
+    <div class="menu left-menu">
+        <h3>Mental Health Test</h3>
+    </div>
+    <div class="menu right-menu">
+        <ul>
+            <li><a href={{ url_for('auth.logout') }}>Logout</a></li>
+        </ul>
+    </div>
+    </header>
+    <main>
+        <div class="container mt-4">
+
+            <form method="POST" action="/">
+
+                <div class="accordion" id="frm-section-acc">
+                    <!-- General Health Section -->
+                    <div class="accordion-item">
+                        <h5 class="accordion-header" id="frmsec-genrl-hlth">
+                            <button class="acc-btn" type="button" data-bs-toggle="collapse" data-bs-target="#collapseOne" aria-expanded="true" aria-controls="collapseOne">
+                                1. General Health and Well-being
+                            </button>
+                        </h5>
+                        <div id="collapseOne" class="accordion-collapse collapse show" aria-labelledby="frmsec-genrl-hlth" data-bs-parent="#frm-section-acc">
+                            <div class="accordion-body">
+                                {% for field in [form.poorhlth, form.physhlth, form.genhlth, form.diffwalk, form.diffalon, form.checkup1] %}
+                                <div class="mb-3">
+                                    <label class="form-label">{{ field.label.text }}</label>
+                                    {{ field(class="form-select") }}
+                                    {% if field.errors %}
+                                        <div class="text-danger">
+                                            {% for error in field.errors %}
+                                                <small>{{ error }}</small>
+                                            {% endfor %}
+                                        </div>
+                                    {% endif %}
+                                </div>
+                                {% endfor %}
+                            </div>
+                        </div>
+                    </div>
+                    <!-- Mental Health Section -->
+                    <div class="accordion-item">
+                        <h4 class="accordion-header" id="frmsec-mtl-hlth">
+                            <button class="acc-btn collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#mentalHealth" aria-expanded="false" aria-controls="mentalHealth">
+                                2. Mental Health and Support
+                            </button>
+                        </h4>
+                        <div id="mentalHealth" class="accordion-collapse collapse" aria-labelledby="frmsec-mtl-hlth" data-bs-parent="#frm-section-acc">
+                            <div class="accordion-body">
+                                {% for field in ['ADDEPEV3', 'ACEDEPRS', 'SDLONELY', 'LSATISFY', 'EMTSUPRT', 'DECIDE', 'CDSOCIA1'] %}
+                                    <div class="mb-3 form-group">
+                                        <select class="form-select" id="{{ field }}" name="{{ field }}">
+                                            <option value="" disabled selected>Choose an option</option>
+                                            <option value="Yes">Yes</option>
+                                            <option value="No">No</option>
+                                            <option value="Sometimes">Sometimes</option>
+                                        </select>
+                                        <label for="{{ field }}" class="form-label">{{ field }}</label>
+                                    </div>
+                                {% endfor %}
+                            </div>
+                        </div>
+                    </div>
+                    <!-- Lifestyle and Habits Section -->
+                    <div class="accordion-item">
+                        <h4 class="accordion-header" id="frmsec-lfst-hlth">
+                            <button class="acc-btn collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#lifestyle" aria-expanded="false" aria-controls="lifestyle">
+                                3. Lifestyle and Habits
+                            </button>
+                        </h4>
+                        <div id="lifestyle" class="accordion-collapse collapse" aria-labelledby="frmsec-lfst-hlth" data-bs-parent="#frm-section-acc">
+                            <div class="accordion-body">
+                                {% for field in ['SMOKDAY2', 'ALCDAY4', 'MARIJAN1', 'EXEROFT1', 'USENOW3'] %}
+                                    <div class="mb-3 form-group">
+                                        <select class="form-select" id="{{ field }}" name="{{ field }}">
+                                            <option value="" disabled selected>Choose an option</option>
+                                            <option value="Daily">Daily</option>
+                                            <option value="Occasionally">Occasionally</option>
+                                            <option value="Never">Never</option>
+                                        </select>
+                                        <label for="{{ field }}" class="form-label">{{ field }}</label>
+                                    </div>
+                                {% endfor %}
+                            </div>
+                        </div>
+                    </div>
+                    <!-- Socioeconomic Factors Section -->
+                    <div class="accordion-item">
+                        <h4 class="accordion-header" id="frmsec-soce-hlth">
+                            <button class="acc-btn collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#socioEconomic" aria-expanded="false" aria-controls="socioEconomic">
+                                4. Socioeconomic Factors
+                            </button>
+                        </h4>
+                        <div id="socioEconomic" class="accordion-collapse collapse" aria-labelledby="frmsec-soce-hlth" data-bs-parent="#frm-section-acc">
+                            <div class="accordion-body">
+                                {% for field in ['INCOME3', 'EDUCA', 'EMPLOY1', 'MARITAL', '_STATE', 'SDHBILLS', 'SDHEMPLY', 'SDHFOOD1', 'SDHSTRE1', 'SDHUTILS', 'SDHTRNSP', 'CDHOUS1'] %}
+                                    <div class="mb-3 form-group">
+                                        <select class="form-select" id="{{ field }}" name="{{ field }}">
+                                            <option value="" disabled selected>Choose an option</option>
+                                            <option value="Yes">Yes</option>
+                                            <option value="No">No</option>
+                                            <option value="Not Applicable">Not Applicable</option>
+                                        </select>
+                                        <label for="{{ field }}" class="form-label">{{ field }}</label>
+                                    </div>
+                                {% endfor %}
+                            </div>
+                        </div>
+                    </div>
+                    <!-- Chronic Conditions and Medical History -->
+                    <div class="accordion-item">
+                        <h4 class="accordion-header" id="frmsec-medh-hlth">
+                            <button class="acc-btn collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#medicalHistory" aria-expanded="false" aria-controls="medicalHistory">
+                                5. Chronic Conditions and Medical History
+                            </button>
+                        </h4>
+                        <div id="medicalHistory" class="accordion-collapse collapse" aria-labelledby="frmsec-medh-hlth"  data-bs-parent="#frm-section-acc">
+                            <div class="accordion-body">
+                                {% for field in ['HAVARTH4', 'DIABETE4', 'CHOLCHK3', 'BPMEDS1', 'BPHIGH6', 'CVDSTRK3', 'CVDCRHD4', 'CHCKDNY2', 'CHOLMED3'] %}
+                                    <div class="mb-3 form-group">
+                                        <select class="form-select" id="{{ field }}" name="{{ field }}">
+                                            <option value="" disabled selected>Choose an option</option>
+                                            <option value="Yes">Yes</option>
+                                            <option value="No">No</option>
+                                            <option value="Not Applicable">Not Applicable</option>
+                                        </select>
+                                        <label for="{{ field }}" class="form-label">{{ field }}</label>
+                                    </div>
+                                {% endfor %}
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+                <div class="survey-submit">
+                    <button type="submit" class="btn btn-primary">Submit</button>
+                </div>
+            </form>
+
+        </div>
+    </main>
+    <footer>
+        <p>&copy; 2025 yourtechy.com LLC. All rights reserved.</p>
+    </footer>
+    <!--
+    <script src="{{ url_for('static', filename='js/bootstrap.min.js') }}"></script>
+    <script src="{{ url_for('static', filename='js/popper.min.js') }}"></script>
+    -->
+</body>
+</html>

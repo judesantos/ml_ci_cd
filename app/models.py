@@ -5,7 +5,7 @@ Classes:
     User: The User class defines the db user model.
 """
 
-from app import db
+from extensions import db
 import bcrypt
 
 
