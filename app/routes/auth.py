@@ -22,8 +22,8 @@ from extensions import db, oauth, limiter
 from settings import settings
 from models import User
 
-from UI.signup_form import SignupForm
-from UI.login_form import LoginForm
+from ui.signup_form import SignupForm
+from ui.login_form import LoginForm
 
 bp = Blueprint('auth', __name__)
 

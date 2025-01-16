@@ -10,7 +10,7 @@ from flask import redirect, flash
 from flask_jwt_extended import jwt_required
 from flask_jwt_extended import get_jwt_identity
 
-from UI.survey_form import SurveyForm
+from ui.survey_form import SurveyForm
 from extensions import limiter
 
 bp = Blueprint('main', __name__)
