@@ -49,7 +49,11 @@ class Settings(BaseSettings):
         if isinstance(v, str):
             return eval(v)
 
-    @field_validator('SQLALCHEMY_DATABASE_URI', mode='before', check_fields=False)
+    @field_validator(
+        'SQLALCHEMY_DATABASE_URI',
+        mode='before',
+        check_fields=False
+    )
     def parse_sqlite_db_path(cls, v):
         """
         Convert the SQLite database path to an absolute path.

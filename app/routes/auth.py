@@ -12,77 +12,20 @@ Entry points:
     - protected: Protected route.
 """
 
-from wtforms import StringField, PasswordField, SubmitField
-from wtforms.validators import DataRequired, EqualTo, Length, Regexp
-
-from flask_wtf import FlaskForm
 from flask import Blueprint, request, jsonify, url_for, flash
 from flask import session, redirect, render_template
 from flask_jwt_extended import create_access_token, jwt_required
-from flask_jwt_extended import get_jwt_identity, unset_jwt_cookies, set_access_cookies
+from flask_jwt_extended import unset_jwt_cookies, set_access_cookies
+from flask_jwt_extended import get_jwt_identity
 
 from extensions import db, oauth, limiter
 from settings import settings
 from models import User
 
+from UI.signup_form import SignupForm
+from UI.login_form import LoginForm
+
 bp = Blueprint('auth', __name__)
-
-
-class SignupForm(FlaskForm):
-    username = StringField(
-        'Username',
-        validators=[DataRequired(), Length(min=6, max=20)],
-        render_kw={"placeholder": "Enter Username"}
-    )
-    email = StringField(
-        'Email',
-        validators=[
-            DataRequired(),
-            Regexp(
-                r'^[a-zA-Z0-9_.+-]+@[a-zA-Z0-9-]+\.[a-zA-Z0-9-.]+$',
-                message="Invalid email address."
-            )
-        ],
-        render_kw={"placeholder": "Enter Email"}
-    )
-    phone = StringField(
-        'Phone',
-        validators=[
-            DataRequired(),
-            Regexp(
-                r'^\+?[1-9]\d{1,14}$',
-                message="Invalid phone number. \
-                Please use international format (+1234567890)."
-            )
-        ],
-        render_kw={"placeholder": "Enter Phone"}
-    )
-    password = PasswordField(
-        'Password',
-        validators=[DataRequired(), Length(min=8)],
-        render_kw={"placeholder": "Enter Password"}
-    )
-    confirm_password = PasswordField(
-        'Confirm Password',
-        validators=[DataRequired(), EqualTo(
-            'password', message='Passwords must match.')],
-        render_kw={"placeholder": "Confirm Password"}
-    )
-    submit = SubmitField('Sign Up')
-
-
-class LoginForm(FlaskForm):
-    username = StringField(
-        'Username',
-        validators=[DataRequired(), Length(min=6, max=20)],
-        render_kw={"placeholder": "Enter Username"}
-    )
-    password = PasswordField(
-        'Password',
-        validators=[DataRequired(), Length(min=8)],
-        render_kw={"placeholder": "Enter Password"}
-    )
-    submit = SubmitField('Login')
 
 
 # Configure Google OAuth
@@ -235,14 +178,14 @@ def login():
             else:
                 validation_success = False
 
-            if validation_success == False:
+            if validation_success is False:
                 flash('Invalid username or password', 'danger')
                 return redirect(url_for('auth.login'))
 
         except Exception as e:
             print(f'Database exception: {str(e.with_traceback(None))}')
             flash(
-                f'Server encountered a problem, please try again.',
+                'Server encountered a problem, please try again.',
                 category='danger'
             )
             return redirect(url_for('auth.login'))
@@ -257,15 +200,15 @@ def login():
         access_token = create_access_token(identity=user.username)
         set_access_cookies(response, access_token)
 
-        print(f'Login Success. Redirect to dashboard')
+        print('Login Success. Redirect to dashboard')
         return response
 
     return render_template('login.html', form=form)
 
 
-@ bp.route('/logout', methods=['get'])
-@ limiter.limit("10 per minute")
-@ jwt_required()
+@bp.route('/logout', methods=['get'])
+@limiter.limit("10 per minute")
+@jwt_required()
 def logout():
     """
     Logout the currently authenticated user.
@@ -277,19 +220,20 @@ def logout():
     session.clear()
 
     response = jsonify({"msg": "Logout successful"})
-    response.headers['Cache-Control'] = 'no-store, no-cache, must-revalidate, max-age=0'
+    response.headers['Cache-Control'] = \
+        'no-store, no-cache, must-revalidate, max-age=0'
     response.headers['Pragma'] = 'no-cache'
     response.headers['Expires'] = '0'
-
     response.delete_cookie('remember_token')
 
-    unset_jwt_cookies(response)  # Remove JWT cookies to invalidate the session
+    # Remove JWT cookies to invalidate the session
+    unset_jwt_cookies(response)
 
     return redirect(url_for('main.home'))
 
 
-@ bp.route('/signup', methods=['GET', 'POST'])
-@ limiter.limit("10 per minute")
+@bp.route('/signup', methods=['GET', 'POST'])
+@limiter.limit("10 per minute")
 def signup():
 
     form = SignupForm()
@@ -329,7 +273,7 @@ def signup():
             print(f'DB Exception: {str(e)}')
             # Send a flash message to the user
             flash(
-                f'Server encountered a problem, please try again.',
+                'Server encountered a problem, please try again.',
                 category='danger'
             )
             flash('Unknown error, please try again.', 'danger')
@@ -341,8 +285,8 @@ def signup():
     return render_template('signup.html', form=form)
 
 
-@ bp.route('/error')
-@ limiter.limit("2 per minute")
+@bp.route('/error')
+@limiter.limit("2 per minute")
 def error():
     """
     Display a custom error message when login fails.

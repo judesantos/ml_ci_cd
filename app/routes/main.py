@@ -6,8 +6,7 @@ Initializes the main blueprint for the application.
 """
 
 from flask import Blueprint, render_template, url_for
-from flask import Blueprint, redirect, jsonify, request, flash
-from flask import render_template
+from flask import redirect, flash
 from flask_jwt_extended import jwt_required
 from flask_jwt_extended import get_jwt_identity
 
