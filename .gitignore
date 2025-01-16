@@ -85,5 +85,4 @@ Pipfile.lock
 *.pkl
 *.ipynb
 
-# Custom patterns
-your_custom_pattern_here/
+app/certs
