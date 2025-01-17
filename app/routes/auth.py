@@ -17,13 +17,14 @@ from flask import session, redirect, render_template
 from flask_jwt_extended import create_access_token, jwt_required
 from flask_jwt_extended import unset_jwt_cookies, set_access_cookies
 from flask_jwt_extended import get_jwt_identity
+from flask_login import login_user, logout_user, current_user
 
 from extensions import db, oauth, limiter
 from settings import settings
-from models import User
+from models.user import User
 
-from ui.signup_form import SignupForm
-from ui.login_form import LoginForm
+from ui.forms.signup_form import SignupForm
+from ui.forms.login_form import LoginForm
 
 bp = Blueprint('auth', __name__)
 
@@ -191,7 +192,8 @@ def login():
             return redirect(url_for('auth.login'))
 
         # Login successful, redirect to the dashboard
-        response = redirect(url_for('main.dashboard'))
+        login_user(user)
+        response = redirect(url_for('main.evaluation'))
 
         # Set session cookie credentials,
         # otherwise the authenticated access to the resource we're
@@ -217,6 +219,7 @@ def logout():
     Redirects to the home page after logout.
     """
 
+    logout_user()
     session.clear()
 
     response = jsonify({"msg": "Logout successful"})

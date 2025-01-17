@@ -8,8 +8,10 @@ Classes:
 from extensions import db
 import bcrypt
 
+from flask_login import UserMixin
 
-class User(db.Model):
+
+class User(db.Model, UserMixin):
     """
     The User class defines the db user model provided
     for application access and security.
@@ -40,7 +42,8 @@ class User(db.Model):
 
     def check_password(self, password: str):
         """Check the password hash for the user."""
-        return bcrypt.checkpw(
+        password_good = bcrypt.checkpw(
             password.encode('utf-8'),
             self.password_hash.encode('utf-8')
         )
+        return password_good

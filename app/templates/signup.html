@@ -51,11 +51,14 @@
                 {{ form.hidden_tag() }}
             </table>
             {{ form.submit(class_="btn btn-primary") }}
+
+            <a href="{{ url_for('auth.login') }}">Login</a>
+            <a href="{{ url_for('auth.login_google') }}">Login with Google</a>
         </form>
     </div>
-    <a href="{{ url_for('auth.login') }}">Login</a>
-    <a href="{{ url_for('auth.login_google') }}">Login with Google</a>
-
+    <footer>
+        <p>&copy; 2025 yourtechy.com LLC. All rights reserved.</p>
+    </footer>
 </body>
 </html>
 

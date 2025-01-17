@@ -2,11 +2,16 @@
 
 """
 
-from flask import Flask, request, redirect
+import datetime
+
+from flask import Flask, jsonify, request, redirect
 from flask_talisman import Talisman
+from flask_login import current_user
 
 from routes import main, auth
 from settings import settings
+from extensions import db, jwt, limiter, oauth, csrf, login_manager
+from models.user import User
 
 
 def create_app(db, jwt, limiter, oauth, csrf):
@@ -37,15 +42,20 @@ def create_app(db, jwt, limiter, oauth, csrf):
     track_notifications = settings.SQLALCHEMY_TRACK_MODIFICATIONS
     google_discovery_url = settings.GOOGLE_DISCOVERY_URL
 
+    app.config['ENV'] = settings.ENV
+    app.config['SESSION_COOKIE_DOMAIN'] = False
+    app.config['SERVER_NAME'] = settings.SERVER_NAME
+
     app.config['SECRET_KEY'] = settings.SECRET_KEY
     app.config['JWT_SECRET_KEY'] = settings.JWT_SECRET_KEY
     # Set to True in production (requires HTTPS)
     app.config['JWT_COOKIE_SECURE'] = settings.JWT_COOKIE_SECURE
     app.config['JWT_TOKEN_LOCATION'] = ['cookies']  # Store JWT in cookies
-    # Default: 'access_token'
     app.config['JWT_ACCESS_COOKIE_NAME'] = 'access_token'
-    app.config['JWT_COOKIE_CSRF_PROTECT'] = True
-    app.config['JWT_COOKIE_SAMESITE'] = 'None'  # For cross-site cookies
+    app.config['JWT_COOKIE_CSRF_PROTECT'] = False
+    app.config['JWT_ACCESS_COOKIE_PATH'] = '/'
+    app.config['JWT_COOKIE_SAMESITE'] = 'Strict'  # For cross-site cookies
+    app.config['JWT_ACCESS_TOKEN_EXPIRES'] = datetime.timedelta(hours=1)
 
     app.config['SQLALCHEMY_DATABASE_URI'] = settings.SQLALCHEMY_DATABASE_URI
     app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = track_notifications
@@ -59,8 +69,11 @@ def create_app(db, jwt, limiter, oauth, csrf):
     db.init_app(app)
     jwt.init_app(app)
     limiter.init_app(app)
-    csrf.init_app(app)
+    # csrf.init_app(app)
     oauth.init_app(app)
+
+    login_manager.init_app(app)
+    login_manager.login_view = 'auth.login'
 
     # Register blueprints
     app.register_blueprint(main.bp)
@@ -69,8 +82,25 @@ def create_app(db, jwt, limiter, oauth, csrf):
     with app.app_context():
         db.create_all()
 
+    @login_manager.user_loader
+    def load_user(user_id):
+        return User.query.get(int(user_id))
+
+    @app.context_processor
+    def inject_user():
+        return dict(current_user=current_user)
+
+    @app.route('/debug')
+    def debug():
+        if current_user.is_authenticated:
+            print(f'Current user: {current_user}')
+        else:
+            print('No current user')
+
     @app.before_request
     def redirect_to_https():
+        # request.headers['X-CSRF-TOKEN'] = request.form.get('csrf_token')
+        # print(f'Request headers:\n {request.headers}')
         if not request.is_secure and app.env != "development":
             return redirect(request.url.replace("http://", "https://"))
 
@@ -88,4 +118,5 @@ def create_app(db, jwt, limiter, oauth, csrf):
             response.headers['SourceMap'] = ''
         return response
 
+    app.debug = True
     return app

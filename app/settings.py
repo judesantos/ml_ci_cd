@@ -30,6 +30,9 @@ class Settings(BaseSettings):
         MAX_CONTENT_LENGTH: (int) maximum content length
     """
 
+    ENV: str
+    SERVER_NAME: str
+
     SECRET_KEY: str
     JWT_SECRET_KEY: str
     JWT_COOKIE_SECURE: bool
