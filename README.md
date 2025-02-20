@@ -4,7 +4,7 @@ The **ml_ci_cd project** demonstrates best practices for code management and hig
 
 ## Table of Contents
 - [Introduction](#introduction)
-- [Processes and Technologies](#processes-and-technologies)
+- [Technologies](#Technologies)
 - [Project Structure](#project-structure)
 - [Installation](#installation)
 - [Usage](#usage)
@@ -15,37 +15,36 @@ The **ml_ci_cd project** demonstrates best practices for code management and hig
 ## Introduction
 **ML CI/CD** is built with a robust development workflow that utilizes a variety of tools and frameworks to optimize scalability, maintainability, and high-quality software practices.
 
-Makefile:
+## Technologies
+
+**Makefile:**
     At its core, **ML CI/CD** uses a **Makefile** to automate repetitive development tasks, like installing dependencies with Poetry, running tests, linting the codebase with Flake8, building the package, and cleaning up artifacts. This ensures that the development process is consistent and easy to manage across team members.
 
-Poetry:
+**Poetry:**
     Dependency management and packaging are handled by **Poetry**, which provides a structured and reproducible environment for development and production.
     Poetry excels over venv and conda by combining seamless dependency management, packaging, and environment isolation into a single, intuitive tool.
 
-Flake8:
+**Flake8:**
     **Flake8** is employed to enforce clean code practices by adhering to PEP 8 standards, with additional linting checks integrated into the CI/CD pipeline via **GitHub Actions**. This ensures that the codebase remains maintainable and free from errors.
 
-SqlAlchemy:
+**SqlAlchemy:**
     For data access, the project uses **SQLAlchemy**, a powerful ORM that simplifies database interactions through declarative models and supports both synchronous and asynchronous operations, making it highly suitable for modern, scalable applications.
     Databases are preferred over CSV files in production due to their scalability, support for concurrent access, and ability to enforce data integrity through constraints. It offers optimized query performance with indexing, transactional support (ACID), and robust security features like authentication and encryption. Databases handle complex relationships, provides tools for recovery, integrates seamlessly with APIs for data access. Supports audit trails and reliable operations in multi-user environments, suitable for large, complex, and dynamic datasets.
 
-Jupyter:
+**Jupyter:**
     During the development phase, **Jupyter Notebooks** are used for prototyping and experimenting with machine learning models. Once validated, the exploratory code is transformed into production-ready application code, ensuring reproducibility and maintaining a clear boundary between research and deployment.
 
 The project adopts a clean and modular code architecture, promoting separation of concerns with layers for data access, business logic, and API interactions.
 
-Flask:
+**Flask:**
     The web application is powered by **Flask**, which serves as a lightweight framework for building RESTful APIs that expose model predictions and manage requests. To enhance performance, the application integrates **asynchronous APIs**, allowing it to handle high concurrency efficiently, especially for I/O-bound tasks.
 
-Loguru:
+**Loguru:**
     Logging is managed using **Loguru**, providing structured, readable, and easily configurable logs for debugging and monitoring the system. Log rotation and retention policies are also integrated to ensure effective logging management.
 
-Git, Github Actions:
+**Git, Github Actions:**
     Finally, **GitHub Actions** is used to automate CI/CD workflows, running tests, linting, and code quality checks on every commit or pull request. This ensures that the application is thoroughly validated before being deployed to staging or production environments. By combining these tools and practices, the project delivers a scalable, maintainable, and high-quality solution for deploying machine learning models in production.
 
-## Other Resources
-- **Git**: Version control for codebase management.
-- **Unit Testing**: Ensures functionality and reliability of code.
 
 ## Project Structure
 ```
